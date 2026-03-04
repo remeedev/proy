@@ -74,7 +74,10 @@ void change_config(char *config_opt, char *setting){
             char *out_path = resolve_path(setting);
             printf(" ");
             bprint(out_path);
-            printf("\n");
+            printf("\nOr:\n\t");
+            bprint("rm -fr ");
+            bprint(_check);
+            printf("\nIf you would like to delete the previously used path.\n");
             free(out_path);
         }
     }
