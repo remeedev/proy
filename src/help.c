@@ -5,7 +5,7 @@
  * Usage:
  *  proy <option>
  *
- * proy help TODO
+ * proy help
  *
  * proy list
  * proy this
@@ -63,7 +63,7 @@ void print_template_help(){
     printf("Templates help menu:\n");
     print_prev_declare("proy template");
     of_course();
-    print_command_ov_usage("new", "Creates a brand new template from a dir.", "proy template add <template_name> <dir>");
+    print_command_ov_usage("new", "Creates a brand new template from a dir.", "proy template new <template_name> <dir>");
     print_command_ov_usage("del", "Deletes a template.", "proy template del <template_name>");
     print_command_overview("list", "Displays a list of all templates created.");
     print_command_overview("who", "Displays the name of a template used for the project the user is standing on.");
