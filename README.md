@@ -105,7 +105,7 @@ Structure (1.0):
 
 and some files in here, like the makefile may have the same structure for most projects.
 
-inside of this project I could run `proy template new c_project .` while inside the project it would create a template from the current project. That way, if I create another c project I can just run `proy new <project_name> c_project`, it will load the template inside of the new project before me stepping into it.
+inside of this project I could run `proy template new c_project .` while inside the folder I would like to turn into a template, it would create a template from the specified directory. That way, if I create another c project I can just run `proy new <project_name> c_project`, it will load the template inside of the new project before me stepping into it.
 
 ## Modules
 
