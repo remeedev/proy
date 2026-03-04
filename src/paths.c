@@ -46,10 +46,7 @@ curr_dir_setup:
     new_install &= check_or_create_folder(get_data_dir(), 1);
     if (new_install){
         printf("Welcome to PROY, a project management application!\n");
-        printf("All missing files have been succesfully created!\n");
-        printf("If you would like a tutorial of how to use proy run:\n");
-        printf("\tproy new <proy_name> learn\n");
-        printf("It will create a project with the learn template and cd into it!\n");
+        printf("Missing files are about to be created...\n");
     }
     return new_install; 
 }
