@@ -119,6 +119,6 @@ you can create a module by running `proy module create import ./src/headers/impo
 
 **Recently added feature:**
 
-If a module requires another module, as a dependency, the module name should be added to the file list, proy will automatically add it as a dependency and when it is removed it removes the dependency with it.
+If a module requires another module, as a dependency, the module name should be added to the file list, proy will automatically add it as a dependency When a module is removed it **alerts** about dependencies but it doesn't remove them.
 
 **Please** observe that importing, using `proy module add import` inside of another project will import the files, if the file structure is different from the one expected by the module it will fail, that is used to check if a module can be imported.

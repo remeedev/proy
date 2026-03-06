@@ -276,7 +276,7 @@ void remove_import(char *import_name){
     free(proy_name);
     for (int i = 0; i < count; i++){
         if (path_list[i][0] == '!'){
-            remove_import(&path_list[i][1]);
+            printf("%s required %s, proy does not delete the module dependencies for you.\nRun:\n\tproy module remove %s\nTo remove it\n", import_name, &path_list[i][1], &path_list[i][1]);
         }
         char *path_to_file = expand_path(proy_path, path_list[i]);
         if (access(path_to_file, F_OK) == 0) remove(path_to_file);
