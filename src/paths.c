@@ -276,12 +276,16 @@ char *expand_path(char *prepended, const char *path){
 
 int is_path(char *str){
     int size = strlen(str);
-    for (int i = 0; i < size; i++){
-        if (i < 2){
-            if (str[i] != "./"[i] && (i == 0 ? str[i] != '/' : 0)) return 0;
-        }
+    int curr_size = 0;
+    int out = 1;
+    if (str[0] != '.' && str[0] != '/') return 0;
+    if (str[0] == '.') curr_size--;
+        
+    for (int i = 1; i < size; i++){
+        if (curr_size == 0 && str[i] == '/') return 0;
+        curr_size++;
     }
-    return 1;
+    return out;
 }
 
 int is_file(char *str){

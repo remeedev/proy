@@ -50,3 +50,8 @@ install:
 uninstall:
 	rm ~/.local/bin/proy
 	rm ~/.local/bin/proy_no_cd
+
+reload: $(files)
+	make uninstall
+	make compile
+	make install

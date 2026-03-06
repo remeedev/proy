@@ -87,7 +87,7 @@ void print_import_help(){
     printf("Import help menu:\n");
     print_prev_declare("proy module");
     of_course();
-    print_command_ov_usage("create", "Creates a new module from the files fed in. The function does not allow for a folder to be fed in.", "proy module create <import_name> [path/to/files]");
+    print_command_ov_usage("create", "Creates a new module from the files fed in. The function does not allow for a folder to be fed in.", "proy module create <import_name> [path/to/files or Module Dependencies]");
     print_command_ov_usage("delete", "Deletes a saved module.", "proy module delete <import_name>");
     print_command_ov_usage("add", "Imports a saved module to the current project.", "proy module add <import_name>");
     print_command_ov_usage("remove", "Removes a module from the current project.", "proy module remove <import_name>");

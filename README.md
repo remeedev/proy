@@ -82,6 +82,8 @@ What if this version is SUPER important ?
 
 Maybe it deserves a name, that's why you can set an alias to the current version.
 
+*Funnily* enough proy does **not** have a version.
+
 ### Disclaimer
 
 Versioning should be in no way meant to keep a track of versions, it just keeps track of *a* version number and alias. I just noticed none of my projects have a version, this allows that to stop.
@@ -114,5 +116,9 @@ If you have used ***any*** programming language, you might've heard about module
 if we go back to the structure 1.0 I could create a module from the import.c file.
 
 you can create a module by running `proy module create import ./src/headers/import.h ./src/import.c`
+
+**Recently added feature:**
+
+If a module requires another module, as a dependency, the module name should be added to the file list, proy will automatically add it as a dependency and when it is removed it removes the dependency with it.
 
 **Please** observe that importing, using `proy module add import` inside of another project will import the files, if the file structure is different from the one expected by the module it will fail, that is used to check if a module can be imported.
