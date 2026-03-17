@@ -21,6 +21,7 @@ void add_file_to_compress(struct archive *a, const char *path){
     int fd = 0;
     ssize_t len;
 
+    printf("Adding %s to template!\n", path);
     stat(path, &st);
     ae = archive_entry_new();
     archive_entry_set_pathname(ae, path);

@@ -117,8 +117,8 @@ if we go back to the structure 1.0 I could create a module from the import.c fil
 
 you can create a module by running `proy module create import ./src/headers/import.h ./src/import.c`
 
-**Recently added feature:**
-
 If a module requires another module, as a dependency, the module name should be added to the file list, proy will automatically add it as a dependency When a module is removed it **alerts** about dependencies but it doesn't remove them.
 
 **Please** observe that importing, using `proy module add import` inside of another project will import the files, if the file structure is different from the one expected by the module it will fail, that is used to check if a module can be imported.
+
+As you know, modules are useful, that's why I have created a repo of some [useful modules](https://github.com/remeedev/structs) that a c programmer could use. You don't need to use them, I am just saying I do.
