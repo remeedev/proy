@@ -12,6 +12,22 @@ Download the repository and cd into it, then run:
 
 After that proy should be already installed, to get started run `proy help`.
 
+## Projects
+
+For **proy** a project is just a folder in your file system, it contains your code, the source and binary folders, if needed and any other files that a regular code project would contain. If you find yourself reusing a folder structure across several projects you can create a template from a folder and it can be specified when creating a new project to specify the structure that project will use.
+
+## Usage
+
+There are several ways to use `proy`, the first use you will probably give it is creating a new project.
+
+To create your first project just run `proy new first_project`
+
+That will create a brand new project folder and cd into the project folder.
+
+Assuming you will be working (probably a couple of days) on this project a useful command to run is `proy pin first_project`, take into account that it must then be `proy unpin`'d to pin a new working project.
+
+That will ensure that next time you want to open your project you just need to run `proy` and it will automatically cd into the project folder.
+
 ## Stars (Maybe a galaxy)
 
 To open a project in proy you just run the command `proy open <project_name>` or, instead of giving a project name, you can give a star index and it will open the project at that index. Stars have two forms of organization.
@@ -111,7 +127,11 @@ inside of this project I could run `proy template new c_project .` while inside 
 
 ## Modules
 
-If you have used ***any*** programming language, you might've heard about modules. They are teeny tiny pieces of code, or sometimes huge pieces of code that you might need, python has `pip` for installing modules, proy has local module handling,
+Modules in proy are snippets of code that one might find themselves reusing over and over again, consider how many small pieces of useful code you have created, proy allows storing these useful snippets to be used in other projects, it only needs projects to follow the same structure specified by the module you are importing.
+
+Therefore, if you have just created a random string generator that you might find useful for test scenarios, you can create a module from it and import it into another project that needs it.
+
+Example:
 
 if we go back to the structure 1.0 I could create a module from the import.c file.
 
@@ -121,4 +141,4 @@ If a module requires another module, as a dependency, the module name should be 
 
 **Please** observe that importing, using `proy module add import` inside of another project will import the files, if the file structure is different from the one expected by the module it will fail, that is used to check if a module can be imported.
 
-As you know, modules are useful, that's why I have created a repo of some [useful modules](https://github.com/remeedev/structs) that a c programmer could use. You don't need to use them, I am just saying I do.
+As you know, modules are useful, that's why I have created a repo of some [useful modules](https://github.com/remeedev/structs) that a c programmer could use. You don't need to use them, I am just saying I do. Also, if you need help creating and generally using modules you can check out the [makefile](https://github.com/remeedev/structs/blob/main/makefile)

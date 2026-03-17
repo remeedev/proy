@@ -307,6 +307,10 @@ void redirect_version_upgrade(int argc, char *argv[]){
         return;
     }
     if (argc < 2){
+        if(is(argv[0], "help")){
+            print_versioning_help();
+            return;
+        }
         if (!is_project(".")){
             must_be_project();
             return;
@@ -319,8 +323,6 @@ void redirect_version_upgrade(int argc, char *argv[]){
             upgrade_minor(proy_name);
         }else if(is(argv[0], "sub")){
             upgrade_sub(proy_name);
-        }else if(is(argv[0], "help")){
-            print_versioning_help();
         }
 
         free(proy_name);

@@ -57,6 +57,7 @@ void print_help(){
     print_command_ov_usage("module", "All options of imports, run 'proy module help' for more info.", "proy module [options...]");
     print_command_ov_usage("track", "Stores version number inside the project's folder. More info on versioning is inside README or do help README", "proy track <project_name/null>");
     print_command_ov_usage("v-alias", "Sets an alias to the current project version.", "proy alias <alias_name> <project_name/null>");
+    print_command_ov_usage("v", "Upgrades project version, run 'proy v help' for more info.", "proy v <version>");
 }
 
 void print_template_help(){
