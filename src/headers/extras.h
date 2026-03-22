@@ -1,6 +1,8 @@
 #ifndef extras
 #define extras
 
+void print_set_CDPATH(char *new_path);
+void print_auto_cd_disclaimer();
 void print_index_elem(int index, char *elem);
 void print_command_overview(char *command_name, char *description);
 void print_command_ov_usage(char *command_name, char *description, char *command_usage);

@@ -54,6 +54,7 @@ starred_path=$/starred.txt
 project_handling=0
 default_version=0.0.0
 project_path=~/proy
+auto_cd=1
 ```
 
 The following is the explanation of each configuration:
@@ -89,6 +90,14 @@ Do you start project at version 0.0.0 or at 1.0.0, or at x.y.z ? this option sto
 8. Project path
 
 It is the path to the folder that stores all of the projects.
+
+9. Auto cd
+
+Defines whether or not the program automatically cd's into a project, turning it off evades creating multiple console instances inside the same console but require the use of the `cd` command. For easier use it gives instructions on setting CDPATH so you just have to do
+
+`cd <project_name>`
+
+While CDPATH is **not set** and auto_cd is **off** proy will give a disclaimer about setting CDPATH to the correct path, if you do have auto_cd **off** it is ****highly*** recommended to have CDPATH set to project_path.
 
 ## Versioning
 

@@ -85,6 +85,11 @@ void change_config(char *config_opt, char *setting){
     if (!is_int(setting)){
         config = hash_append(config, config_opt, setting);
     }else {
+        if (str2int(setting) == 0 && is(config_opt, "auto_cd")){
+            char *path = resolve_path(config_get("project_path"));
+            print_set_CDPATH(path);
+            free(path);
+        }
         config = hash_int_append(config, config_opt, str2int(setting));
     }
     char *config_path = resolve_path("+/proy.conf");
@@ -114,6 +119,7 @@ hash *generate_default_config(){
     out = hash_append(out, "default_version", "0.0.0");
     out = hash_int_append(out, "project_handling", 0);
     out = hash_int_append(out, "star_reorder", 1);
+    out = hash_int_append(out, "auto_cd", 1);
 
     return out;
 }

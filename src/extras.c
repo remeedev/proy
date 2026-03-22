@@ -8,6 +8,19 @@ void print_command_overview(char *command_name, char *description){
     printf("\t%s%s%s\n\t\t%s\n",BOLD, command_name,END_COLOR, description);
 }
 
+void print_auto_cd_disclaimer(){
+    printf("Proy has 'auto_cd' set to false.\n");
+    printf("Therefore it will not cd into projects, that includes %sproy open%s, %sproy new%s and %sproy%s!\n", BOLD, END_COLOR, BOLD, END_COLOR, BOLD, END_COLOR);
+    printf("If you would still like to open projects using proy run:\n");
+    printf("\tproy conf set auto_cd 1\n");
+}
+
+void print_set_CDPATH(char *new_path){
+    printf("Proy is set to not automatically cd into directories!\n");
+    printf("You must add at the end of your .bashrc file the following line:\n");
+    printf("\texport CDPATH = %s\n", new_path);
+}
+
 void print_command_ov_usage(char *command_name, char *description, char *command_usage){
     print_command_overview(command_name,description);
     printf("\t\tUsage:\n\t\t\t%s\n", command_usage);

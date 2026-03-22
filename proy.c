@@ -62,6 +62,15 @@
 #include "src/headers/versions.h"
 #include "src/headers/help.h" // Not _really_ needed 
 
+int check_CDPATH(){
+    const char *CDPATH = getenv("CDPATH");
+    if (CDPATH == NULL) return 0;
+    char *project_path = resolve_path(config_get(project_path));
+    int out = includes((char *)CDPATH, project_path);
+    free(project_path);
+    return out;
+}
+
 void create_proy(int argc, char *argv[]){
     if (argc != 2 && argc != 1){
         print_incorrect_usage("proy new <project_name> <project_type|NULL>");
@@ -80,13 +89,30 @@ void create_proy(int argc, char *argv[]){
             return;
         }
     }
-    printf("%s", full_proy_path);
+    if (config_get_i("auto_cd") == 0){
+        if (check_CDPATH()){
+            printf("Proy is set to not cd into directories, to open the project run:\n");
+            printf("\tcd %s\n", argv[0]);
+        }else{
+            char *project_path = resolve_path(config_get("project_path"));
+            print_set_CDPATH(project_path);
+            printf("alternatively, you can cd to the directory by running:\n");
+            printf("\tcd %s/%s\n", project_path, argv[0]);
+            free(project_path);
+        }
+    }else{
+        printf("%s", full_proy_path);
+    }
     free(full_proy_path);
 }
 
 void open_proy(int argc, char *argv[]){
     if (argc != 1){
         print_incorrect_usage("proy open <project_name>");
+        return;
+    }
+    if (config_get_i("auto_cd") == 0){
+        print_auto_cd_disclaimer();
         return;
     }
     if (is_int(argv[0])){
@@ -114,16 +140,6 @@ void del_proy(int argc, char *argv[]){
     char *proy_path = get_project_path(argv[0]);
     check_and_delete_folder(proy_path, 0);
     free(proy_path);
-}
-
-int is(char *a, char *b){
-    int i = 0;
-    while (a[i] != '\0' && b[i] != '\0'){
-        if (a[i] != b[i]) return 0;
-        i++;
-    }
-    if (a[i] != b[i]) return 0;
-    return 1;
 }
 
 void redirect_add_star(int argc, char **argv){
@@ -463,12 +479,16 @@ int main(int argc, char *argv[]){
             print_command_not_recognized(argv[1]);
         }
     }else{
-        if (get_curr_pin() == NULL){
-            print_error("There is no currently pinned project!\n");
+        if (config_get_i("auto_cd") == 0){
+            print_auto_cd_disclaimer();
         }else{
-            char *proy_path = get_project_path(get_curr_pin());
-            printf("%s", proy_path);
-            free(proy_path);
+            if (get_curr_pin() == NULL){
+                print_error("There is no currently pinned project!\n");
+            }else{
+                char *proy_path = get_project_path(get_curr_pin());
+                printf("%s", proy_path);
+                free(proy_path);
+            }
         }
     }
 
