@@ -97,7 +97,7 @@ Defines whether or not the program automatically cd's into a project, turning it
 
 `cd <project_name>`
 
-While CDPATH is **not set** and auto_cd is **off** proy will give a disclaimer about setting CDPATH to the correct path, if you do have auto_cd **off** it is ****highly*** recommended to have CDPATH set to project_path.
+While CDPATH is **not set** and auto_cd is **off** proy will give a disclaimer about setting CDPATH to the correct path, if you do have auto_cd **off** it is ***highly*** recommended to have CDPATH set to project_path.
 
 ## Versioning
 
