@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+#include "headers/hash_map.h"
 #include "headers/extras.h"
 #include "headers/paths.h"
 #include "headers/config.h"
@@ -17,6 +18,7 @@ typedef struct import{
 }import;
 
 void import_new(char *import_name);
+void silent_import_new(char *import_name, hash **visited);
 
 char *get_import_path(char *import_name){
     char *import_list[3] = {config_get("import_dir"), "/", import_name};
@@ -24,7 +26,7 @@ char *get_import_path(char *import_name){
     return out;
 }
 
-void unpack_import(char *fp){
+void unpack_import(char *fp, hash **visited){
     FILE *file = fopen(fp, "r");
     if (file == NULL){
         print_error("There has been an error opening the file.");
@@ -41,9 +43,7 @@ void unpack_import(char *fp){
     while (fgets(buffer, sizeof(buffer), file) != NULL){
         if (buffer[0] == '!') {
             buffer[strlen(buffer) - 1] = '\0'; // remove trailing \n
-            char *import_path = get_import_path(&buffer[1]);
-            unpack_import(import_path);
-            free(import_path);
+            silent_import_new(buffer + 1, visited);
             continue;
         }
         if (!is_path(buffer)){
@@ -149,12 +149,23 @@ void free_path_list(char **path_list, int path_count){
     free(path_list);
 }
 
-int check_if_can_import(char *module_name){
+int check_if_can_import(char *module_name, hash** visited){
+    hash *jic = NULL;
+    int visited_created = visited == NULL;
+    if (visited == NULL) {
+        jic = create_hash_map(11);
+        visited = &jic;
+    }
+    if (hash_int_get(*visited, module_name) == 1) {
+        return 1;
+    }
+    *visited = hash_int_append(*visited, module_name, 1);
     int count = 0;
     char **path_list = get_import_paths(module_name, &count);
     if (path_list == NULL){
         mem_alloc_error();
         free_path_list(path_list, count);
+        if (visited_created) hash_free(*visited);
         return 0;
     }
     char *proy_name = get_project_name(".");
@@ -163,7 +174,8 @@ int check_if_can_import(char *module_name){
 
     for (int i = 0; i < count;  i++){
         if (path_list[i][0] == '!'){
-            if (!check_if_can_import(&path_list[i][1])){
+            if (!check_if_can_import(path_list[i] + 1, visited)){
+                if (visited_created) hash_free(*visited);
                 return 0;
             }
             continue;
@@ -173,6 +185,7 @@ int check_if_can_import(char *module_name){
         path_list[i][j] = '\0';
         char *full_path = expand_path(proy_path, path_list[i]);
         if (access(full_path, F_OK) != 0){
+            if (visited_created) hash_free(*visited);
             free_path_list(path_list, count);
             free(full_path);
             return 0;
@@ -183,15 +196,27 @@ int check_if_can_import(char *module_name){
 
     free_path_list(path_list, count);
 
+    if (visited_created) hash_free(*visited);
     return 1;
 }
 
-int check_if_imported(char *module_name){
+int check_if_imported(char *module_name, hash **visited, int only_files){
+    hash *jic = NULL;
+    int visited_created = visited == NULL;
+    if (visited == NULL){
+        jic = create_hash_map(11);
+        visited = &jic;
+    }
+    if (hash_int_get(*visited, module_name) == 1) {
+        return 1;
+    }
+    *visited = hash_int_append(*visited, module_name, 1);
     int count = 0;
     char **path_list = get_import_paths(module_name, &count);
     if (path_list == NULL){
         mem_alloc_error();
         free_path_list(path_list, count);
+        if (visited_created) hash_free(*visited);
         return 0;
     }
 
@@ -200,7 +225,9 @@ int check_if_imported(char *module_name){
     free(proy_name);
     for (int i = 0; i < count;  i++){
         if (path_list[i][0] == '!'){
-            if (!check_if_imported(&path_list[i][1])){
+            if (only_files) continue;
+            if (!check_if_imported(&path_list[i][1], visited, only_files)){
+                if (visited_created) hash_free(*visited);
                 return 0;
             }
             continue;
@@ -210,6 +237,7 @@ int check_if_imported(char *module_name){
             free_path_list(path_list, count);
             free(full_path);
             free(proy_path);
+            if (visited_created) hash_free(*visited);
             return 0;
         }
         free(full_path);
@@ -218,7 +246,39 @@ int check_if_imported(char *module_name){
 
     free_path_list(path_list, count);
 
+    if (visited_created) hash_free(*visited);
     return 1;
+}
+
+void silent_import_new(char *import_name, hash **visited){
+    if (!is_project(".")){
+        return;
+    }
+    if (!import_exists(import_name)){
+        return;
+    }
+    hash *visit_cpy1 = create_hash_map(11);
+    visit_cpy1 = hash_merge_missing_keys(*visited, visit_cpy1);
+    if (check_if_imported(import_name, &visit_cpy1, 0)){
+        return;
+    }
+    hash_free(visit_cpy1);
+    visit_cpy1 = create_hash_map(11);
+    visit_cpy1 = hash_merge_missing_keys(*visited, visit_cpy1);
+    if (!check_if_can_import(import_name, &visit_cpy1)){
+        return;
+    }
+    hash_free(visit_cpy1);
+    char *import_path = get_import_path(import_name);
+
+    *visited = hash_int_append(*visited, import_name, 1);
+    unpack_import(import_path, visited);
+
+    free(import_path);
+    printf("Succesfully imported '");
+    bprint(import_name);
+    printf("'!\n");
+
 }
 
 void import_new(char *import_name){
@@ -230,20 +290,26 @@ void import_new(char *import_name){
         print_module_does_not_exist(import_name);
         return;
     }
-    if (check_if_imported(import_name)){
+    if (check_if_imported(import_name, NULL, 0)){
         print_module_already_imported(import_name);
         return;
     }
-    if (!check_if_can_import(import_name)){
+    if (!check_if_can_import(import_name, NULL)){
         printf("Cannot import '");
         bprint(import_name);
         printf("', project does not follow import structure!\n");
         return;
     }
+    printf("Importing %s...\n", import_name);
     char *import_path = get_import_path(import_name);
     printf("Import path: %s\n", import_path);
 
-    unpack_import(import_path);
+    hash* visited = create_hash_map(11);
+    visited = hash_int_append(visited, import_name, 1);
+
+    unpack_import(import_path, &visited);
+
+    hash_free(visited);
 
     free(import_path);
     printf("Succesfully imported '");
@@ -260,7 +326,7 @@ void remove_import(char *import_name){
         print_module_does_not_exist(import_name);
         return;
     }
-    if (!check_if_imported(import_name)){
+    if (!check_if_imported(import_name, NULL, 1)){
         print_module_not_imported(import_name);
         return;
     }
@@ -337,7 +403,7 @@ void which_modules(){
     int imported = 0;
     if (count > 0){
         for (int i = 0; i < count; i++) {
-            if (check_if_imported(saved_modules[i])){
+            if (check_if_imported(saved_modules[i], NULL, 1)){
                 printf("'");
                 bprint(saved_modules[i]);
                 printf("'\n");
