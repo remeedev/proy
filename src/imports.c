@@ -4,6 +4,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <sys/stat.h>
 
 #include "headers/hash_map.h"
 #include "headers/extras.h"
@@ -40,6 +41,7 @@ void unpack_import(char *fp, hash **visited){
     char buffer[1024];
 
     FILE *curr_file = NULL;
+    char *file_name = NULL;
     while (fgets(buffer, sizeof(buffer), file) != NULL){
         if (buffer[0] == '!') {
             buffer[strlen(buffer) - 1] = '\0'; // remove trailing \n
@@ -55,11 +57,17 @@ void unpack_import(char *fp, hash **visited){
             }
             fprintf(curr_file, "%s", buffer);
         }else{
-            if (curr_file != NULL) fclose(curr_file);
+            if (curr_file != NULL) {
+                char *file_path = expand_path(proy_path, file_name);
+                chmod(file_path, 0444);
+                free(file_path);
+                free(file_name);
+                fclose(curr_file);
+            }
             curr_file = NULL;
 
             int size = strlen(buffer);
-            char *file_name= (char *)malloc(size);
+            file_name= (char *)malloc(size);
             if (file_name== NULL){
                 mem_alloc_error();
                 fclose(file);
@@ -80,11 +88,13 @@ void unpack_import(char *fp, hash **visited){
             }
 
             free(file_path);
-            free(file_name);
         }
     }
     free(proy_path);
-    if (curr_file != NULL) fclose(curr_file);
+    if (curr_file != NULL) {
+        fclose(curr_file);
+        free(file_name);
+    }
     fclose(file);
 }
 
