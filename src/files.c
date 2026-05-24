@@ -17,6 +17,20 @@ int check_or_create_folder(char *path, int silent){
     return 0;
 }
 
+void check_and_create_file_folders_recursive(char *path){
+    int i = 0;
+    char *tmp = strdup(path);
+    while (path[i] != 0){
+        while (path[i] != '/' && path[i] != 0) i++;
+        if (path[i] == 0) break;
+        tmp[i] = 0;
+        check_or_create_folder(tmp, 1);
+        tmp[i] = '/';
+        i++;
+    }
+    free(tmp);
+}
+
 char **all_type_in_path(char *path, int type, int *count){
     struct dirent* d;
     DIR *dir;

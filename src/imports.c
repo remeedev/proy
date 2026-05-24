@@ -77,6 +77,7 @@ void unpack_import(char *fp, hash **visited){
             for (int i = 0; i < size; i++)file_name[i] = buffer[i];
             file_name[size - 1] = '\0';
             char *file_path = expand_path(proy_path, file_name);
+            check_and_create_file_folders_recursive(file_path);
             curr_file = fopen(file_path, "w");
 
             if (curr_file == NULL){
@@ -90,11 +91,14 @@ void unpack_import(char *fp, hash **visited){
             free(file_path);
         }
     }
-    free(proy_path);
     if (curr_file != NULL) {
         fclose(curr_file);
+        char *file_path = expand_path(proy_path, file_name);
+        chmod(file_path, 0444);
+        free(file_path);
         free(file_name);
     }
+    free(proy_path);
     fclose(file);
 }
 
@@ -194,12 +198,7 @@ int check_if_can_import(char *module_name, hash** visited){
         while (j > 0 && path_list[i][j] != '/') j--;
         path_list[i][j] = '\0';
         char *full_path = expand_path(proy_path, path_list[i]);
-        if (access(full_path, F_OK) != 0){
-            if (visited_created) hash_free(*visited);
-            free_path_list(path_list, count);
-            free(full_path);
-            return 0;
-        }
+        
         free(full_path);
     }
     free(proy_path);

@@ -9,6 +9,8 @@ void free_type_list(char **list, int count);
 void list_folders_in_path(char *path);
 void list_files_in_path(char *path);
 
+void check_and_create_file_folders_recursive(char *path);
+
 int check_or_create_folder(char *path, int silent);
 int check_or_create_file(char *path, int silent);
 
