@@ -404,6 +404,7 @@ int main(int argc, char *argv[]){
         end_paths();
         return 0;
     }
+
     // For windows: Userdir
     if (!get_home_dir()){
         printf("There is no home directory! Set it to start development!\n");
@@ -413,6 +414,10 @@ int main(int argc, char *argv[]){
     setup_config();
     load_stars();
     load_pin();
+
+    if (is(argv[0], "proy") && config_get_i("warn_debug")) {
+        printf("\033[33m[Warning]\033[0m Proy is possibly running in debug mode, which may strain speed, reinstall normally to remove!\n");
+    }
 
     if (argc >= 2){
         if (is(argv[1], "new")){
@@ -490,6 +495,10 @@ int main(int argc, char *argv[]){
                 free(proy_path);
             }
         }
+    }
+
+    if (is(argv[0], "proy")){
+        printf("\n");
     }
 
     unload_pin();

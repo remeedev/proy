@@ -224,7 +224,6 @@ int check_if_imported(char *module_name, hash **visited, int only_files){
     char **path_list = get_import_paths(module_name, &count);
     if (path_list == NULL){
         mem_alloc_error();
-        free_path_list(path_list, count);
         if (visited_created) hash_free(*visited);
         return 0;
     }
@@ -237,6 +236,8 @@ int check_if_imported(char *module_name, hash **visited, int only_files){
             if (only_files) continue;
             if (!check_if_imported(&path_list[i][1], visited, only_files)){
                 if (visited_created) hash_free(*visited);
+                free(proy_path);
+                free_path_list(path_list, count);
                 return 0;
             }
             continue;
@@ -269,12 +270,14 @@ void silent_import_new(char *import_name, hash **visited){
     hash *visit_cpy1 = create_hash_map(11);
     visit_cpy1 = hash_merge_missing_keys(*visited, visit_cpy1);
     if (check_if_imported(import_name, &visit_cpy1, 0)){
+        hash_free(visit_cpy1);
         return;
     }
     hash_free(visit_cpy1);
     visit_cpy1 = create_hash_map(11);
     visit_cpy1 = hash_merge_missing_keys(*visited, visit_cpy1);
     if (!check_if_can_import(import_name, &visit_cpy1)){
+        hash_free(visit_cpy1);
         return;
     }
     hash_free(visit_cpy1);
@@ -303,12 +306,13 @@ void import_new(char *import_name){
         print_module_already_imported(import_name);
         return;
     }
-    if (!check_if_can_import(import_name, NULL)){
+/*    if (!check_if_can_import(import_name, NULL)){
         printf("Cannot import '");
         bprint(import_name);
         printf("', project does not follow import structure!\n");
         return;
     }
+*/
     printf("Importing %s...\n", import_name);
     char *import_path = get_import_path(import_name);
     printf("Import path: %s\n", import_path);

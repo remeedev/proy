@@ -127,8 +127,9 @@ hash* hash_append(hash* table, char *key, char *value){
 char* hash_get(hash *table, char *key){
     int pos = hash_key(table, key);
 
-    while (table->elems[pos] != NULL && ( table->elems[pos]->key == NULL || strcmp(table->elems[pos]->key, key) != 0 )) pos++;
-    if (table->elems[pos] == NULL) return NULL;
+    while (pos < table->capacity && table->elems[pos] != NULL &&
+            ( table->elems[pos]->key == NULL || strcmp(table->elems[pos]->key, key) != 0 )) pos++;
+    if (pos >= table->capacity || table->elems[pos] == NULL) return NULL;
     return table->elems[pos]->value;
 }
 

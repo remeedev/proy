@@ -120,6 +120,7 @@ hash *generate_default_config(){
     out = hash_int_append(out, "project_handling", 0);
     out = hash_int_append(out, "star_reorder", 1);
     out = hash_int_append(out, "auto_cd", 1);
+    out = hash_int_append(out, "warn_debug", 1);
 
     return out;
 }

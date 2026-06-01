@@ -48,8 +48,12 @@ install:
 	install ./proy ~/.local/bin/proy_no_cd
 
 uninstall:
-	rm ~/.local/bin/proy
-	rm ~/.local/bin/proy_no_cd
+	rm -fv ~/.local/bin/proy ~/.local/bin/proy_no_cd
+
+reload-d:
+	make uninstall
+	make compile-debug
+	install ./proy ~/.local/bin/proy
 
 reload: $(files)
 	make uninstall
