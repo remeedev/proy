@@ -1,0 +1,13 @@
+#!/bin/bash
+
+dir=$(proy_no_cd "$@")
+
+if [ -d "$dir" ]; then
+    cd "$dir"
+    echo "Opened project!"
+    echo "A new bash console has been created for the current project!"
+    echo -e "\t Type 'exit' to go back to your previous console!"
+    $SHELL
+else
+    echo "$dir"
+fi
